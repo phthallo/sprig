@@ -718,7 +718,7 @@ updateCurrency(0)
 // Jumps are two units, and if we don't check if there are platforms
 // directly above the Knight it will simply move through it.
 function ceilingCheck(sprite) {
-  var yPos = sprite.y
+  let yPos = sprite.y
   sprite.y -= movement // try to move the sprite up
   if (sprite.y == yPos) { // if moving up didnt work
     return true
@@ -729,7 +729,7 @@ function ceilingCheck(sprite) {
 
 // Check if the Knight is currently on a platform.
 function groundCheck(sprite) {
-  var yPos = sprite.y
+  let yPos = sprite.y
   sprite.y += movement // try to move the sprite down
   if (sprite.y == yPos) {
     // do nothing because apparently javascript doesnt have pass
@@ -751,12 +751,14 @@ function moveDown(sprite) {
 // Room transitions + regenerate the UI
 function checkInteraction(sprite1, lvl) {
   const arr = ["i", "j", "l", "k"]
-  knightCoords = getTile(getFirst(sprite1).x, getFirst(sprite1).y)
-  currentLevel = "R" + lvl
-  for (roomDirection in [0, 1, 2, 3]) {
+  const roomDir = [0, 1,2, 3]
+  let knightCoords = getTile(getFirst(sprite1).x, getFirst(sprite1).y)
+  let currentLevel = "R" + lvl
+  for (var roomDirection in roomDir) {
     if (knightCoords.find(sprite => sprite.type == arr[roomDirection]) && (levelsDir[currentLevel][roomDirection])) {
-      roomInfo = levelsDir[currentLevel][roomDirection]
-      level = roomInfo[0]
+      let roomInfo = levelsDir[currentLevel][roomDirection]
+      let level = roomInfo[0]
+      console.log(level)
         setMap(levels[level])
         setBackground(levelsDir["R"+level][4])
         spawnSecrets(levelsDir["R"+level][6])
@@ -781,11 +783,11 @@ function refreshScreen(){
 }
 
 function checkHazard(sprite, hazard, respawnCoords) {
-  directions = 
+  var directions = 
     [getTile(getFirst(sprite).x, (getFirst(sprite).y)),
      getTile((getFirst(sprite).x), (getFirst(sprite).y)+1),
      getTile((getFirst(sprite).x), (getFirst(sprite).y)-1)]
-  for (knightCoords in directions){
+  for (var knightCoords in directions){
     if (directions[knightCoords].find(sprite => sprite.type == hazard)) {
       lives -= 1
       playTune(hurtSFX)
@@ -799,7 +801,7 @@ function checkHazard(sprite, hazard, respawnCoords) {
 
 
 function checkGate(knight){
-  gateCoords = getTile(getFirst(knight).x+1, (getFirst(knight).y))
+  let gateCoords = getTile(getFirst(knight).x+1, (getFirst(knight).y))
   if (gateCoords.find(sprite => sprite.type == keyGate) && (inventory.includes("h"))) {
     inventory.splice(inventory.indexOf("h"), 1)
     keyGateOpen = true
@@ -908,8 +910,8 @@ onInput("d", () => {
 })
 
 onInput("j", () => {
-  slashX = getFirst(player).x + lastXInput
-  slashY = getFirst(player).y
+  let slashX = getFirst(player).x + lastXInput
+  let slashY = getFirst(player).y
     if (lastXInput == 1){
       addSprite(slashX, slashY, rightSlash)
       } else {
@@ -918,11 +920,11 @@ onInput("j", () => {
   playTune(slashSFX)
   setTimeout(() => {
     if (lastXInput == 1){
-      for (sprite = 0; sprite < getAll(rightSlash).length; sprite++){
+      for (let sprite = 0; sprite < getAll(rightSlash).length; sprite++){
         getAll(rightSlash)[sprite].remove()
         }
     } else {
-      for (sprite = 0; sprite < getAll(leftSlash).length; sprite++){
+      for (let sprite = 0; sprite < getAll(leftSlash).length; sprite++){
         getAll(leftSlash)[sprite].remove()
         }
            }
@@ -986,7 +988,7 @@ onInput("j", () => {
 })
 
 onInput("k", () => {
-  knightCoords = getTile(getFirst(player).x, getFirst(player).y)
+  let knightCoords = getTile(getFirst(player).x, getFirst(player).y)
   if (knightCoords.find(sprite => sprite.type == chest && keyGet == false)) {
       addText("KEY obtained", {
       x: 0,
@@ -1032,9 +1034,9 @@ afterInput(() => {
   if (!(level >= 10)){
     console.log(getFirst(player).x, getFirst(player).y)
     checkInteraction(player, level)
-    enemyInfo = levelsDir["R" + level][5]
+    let enemyInfo = levelsDir["R" + level][5]
     if (enemyInfo){ // If there's an enemy/hazard listed as being in the current room
-      for (enemy in enemyInfo){
+      for (var enemy in enemyInfo){
         checkHazard(player, enemyInfo[enemy][0], enemyInfo[enemy][1])
     }
     }
